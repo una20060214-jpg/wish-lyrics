@@ -1,0 +1,456 @@
+﻿<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>STEADY / NCT WISH</title> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="description" content="Steady 歌詞"> 
+
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://code.jquery.com/ui/1.14.2/jquery-ui.js"></script>
+
+    <script>
+        $(function() {
+            // main 區塊淡入效果
+            $("main").hide().fadeIn(2000);
+            
+            // 初始化原本在歌詞底下的 Tabs
+            $("#tabs").tabs();
+
+            // 歌曲切換按鈕點擊動態效果與底色變換
+            $(".song-btn").on("click", function() {
+                var targetSong = $(this).data("target");
+                
+                // 按鈕 active 狀態切換
+                $(".song-btn").removeClass("active");
+                $(this).addClass("active");
+
+                // 隱藏目前歌曲並淡入顯示目標歌曲
+                $(".song-content").fadeOut(300, function() {
+                    $("#" + targetSong).fadeIn(400);
+                });
+
+                // 判斷切換底色：第二首 (song-2) 改為淡粉紅，第一首變回薄荷綠
+                if (targetSong === "song-2") {
+                    $(".lyrics-section").css("background-color", "#FFC0CB"); // 淡粉紅
+                } else {
+                    $(".lyrics-section").css("background-color", "#A1F8EB"); // 薄荷綠
+                }
+            });
+        });
+    </script>
+
+    <style>
+        @charset "UTF-8";
+        @import url('https://fonts.googleapis.com/earlyaccess/notosanstc.css');
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Noto Sans TC", sans-serif;
+            background: #fff;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            -webkit-text-size-adjust: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 1. 頂部 Header */
+        header {
+            background: #3E2723; /* 深咖啡色 */
+            padding: 15px 10px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        /* 原本從左往右滑入的動態效果 */
+        h1 {
+            font-size: 28px;
+            color: #FFFFFF;
+            font-weight: 700;
+            margin: 0 0 5px 0;
+            animation-duration: 3s;
+            animation-name: slidein;
+        }
+
+        @keyframes slidein {
+            from {
+                padding-left: 100%;
+                width: 300%;
+            }
+            to {
+                padding-left: 0%;
+                width: 100%;
+            }
+        }
+
+        h2 {
+            font-size: 15px;
+            color: #FFFFFF;
+            font-weight: 300;
+            margin: 5px 0 0 0;
+        }
+
+        h3 {
+            font-size: 13px;
+            color: #FFFFFF;
+            font-weight: 100;
+            margin: 0;
+        }
+
+        /* 上方切換歌曲按鈕區域 */
+        .song-nav {
+            background: #257463;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .song-btn {
+            background: #3E2723;
+            color: #FFFFFF;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .song-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            background: #FFFFFF;
+            color: #3E2723;
+        }
+
+        .song-btn.active {
+            background: #FFFFFF;
+            color: #3E2723;
+            transform: scale(1.05);
+        }
+
+        /* 2. 主內容區域（左右雙欄） */
+        main {
+            margin-top: 130px;    /* 避開頂部固定 Header */
+            margin-bottom: 40px;   /* 避開底部固定 Footer */
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            width: 100%;
+        }
+
+        .song-container-wrapper {
+            display: flex;
+            flex: 1;
+            width: 100%;
+        }
+
+        /* 歌詞內的標題放大並改為咖啡色 */
+        .song-title {
+            font-size: 26px;
+            color: #3E2723;
+            font-weight: bold;
+            margin: 10px 0 5px 0;
+        }
+
+        .song-info {
+            font-size: 14px;
+            color: #3E2723;
+            margin-bottom: 20px;
+        }
+
+        /* 左側 70% 歌詞區塊（增加 transition 讓換背景色更平滑） */
+        .lyrics-section {
+            flex: 7;
+            background-color: #A1F8EB; /* 預設薄荷淺綠 */
+            color: #3E2723;
+            padding: 40px 30px;
+            font-size: 16px;
+            line-height: 2.2em;
+            text-align: center;
+            overflow-y: auto;
+            transition: background-color 0.5s ease;
+        }
+
+        /* 右側 30% 圖片區塊 */
+        .image-section {
+            flex: 3;
+            background: #257463; /* 深綠色背景 */
+            padding: 30px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 20px;
+            overflow-y: auto;
+        }
+
+        .image-section img {
+            width: 100%;
+            max-width: 250px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            object-fit: cover;
+        }
+
+        /* jQuery UI Tabs 樣式修飾（原本在歌詞底下的三個分頁） */
+        #tabs {
+            margin-top: 25px;
+            text-align: left;
+        }
+
+        /* 超連結樣式 */
+        a {
+            color: #3E2723;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        a:hover {
+            color: #048FC1;
+            text-decoration: none;
+        }
+
+        /* 3. 底部 Footer */
+        footer {
+            background: #3E2723;
+            color: #FFFFFF;
+            padding: 10px;
+            font-size: 14px;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .copyright {
+            margin: 0;
+        }
+
+        /* 響應式：手機解析度切換為單欄直排 */
+        @media (max-width: 768px) {
+            .song-container-wrapper {
+                flex-direction: column;
+            }
+            .lyrics-section, .image-section {
+                width: 100%;
+                flex: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>STEADY</h1>
+    <h3>NCT WISH The 1st mini Album</h3>
+    <h2>作詞：KENZIE / 作曲：KENZIE、Karen Poole、Georgia Ku、Lewis Jankel / 編曲：KENZIE、no2zcat、Shift K3Y</h2>
+</header>
+
+<main>
+    <!-- 切換歌曲的動態按鈕選單 -->
+    <div class="song-nav">
+        <button class="song-btn active" data-target="song-1">STEADY</button>
+        <button class="song-btn" data-target="song-2">DUNK SHOT</button>
+    </div>
+
+    <!-- 第一首歌：STEADY -->
+    <div id="song-1" class="song-content song-container-wrapper">
+        <!-- 左邊歌詞區 -->
+        <div class="lyrics-section">
+            <div class="song-title">STEADY</div>
+            <div class="song-info">作詞：KENZIE / 作曲：KENZIE、Karen Poole、Georgia Ku、Lewis Jankel</div>
+            
+           소원을 말했어 (I wish), 넌 거기 있었고 (right there)<br>
+                그 날의 너와 날 기적이라 부르자<br>
+                My favorite thing (favorite thing), 함께할 계절의<br>
+                반짝임을 본 기분의 색깔은 뭘까?<br><br>
+
+                Feeling good right now<br>
+                사랑이 자라나는 걸 봐봐<br>
+                놓치지 말아<br>
+                지금 우리는 시작된 거야<br><br>
+
+                넌 아름다워 푸르디푸른 눈빛<br>
+                그 다정, 다정 말투 이대로 변하지 마<br>
+                뜨거운 바람 속 세포는 너를 느껴 버렸어 (yeah)<br>
+                이대로 가면 돼<br><br>
+
+                Day by (오래오래), day by (오래오래)<br>
+                Day, yeah (우리 오래), 이대로만 가자<br>
+                Day by (오래오래), day by (오래오래)<br>
+                Day, yeah (우리 오래), 이대로 가면 돼<br><br>
+
+                Let's go steady (yeah), let's go steady, yeah<br>
+                Let's go-o-o-o steady (uh), let's go steady, yeah<br><br>
+
+                Take it slow, let it grow<br>
+                I'm talking 'bout that old school love<br>
+                Let's go steady, got me feeling like I'm floating<br>
+                혼자 훌쩍 떠나거나 내 첫 차를 산다거나<br>
+                세상 어떤 선물 너를 만난 만큼 설렐까?<br><br>
+
+                Feeling high right now<br>
+                하늘의 하얀 구름을 봐봐<br>
+                더 매일매일<br>
+                너에게 가까워질 거야<br><br>
+
+                넌 아름다워 푸르디푸른 눈빛<br>
+                그 다정, 다정 말투 이대로 변하지 마<br>
+                뜨거운 바람 속 세포는 너를 느껴 버렸어 (yeah)<br>
+                이대로 가면 돼<br><br>
+
+                Day by (오래오래), day by (오래오래)<br>
+                Day, yeah (우리 오래), 이대로만 가자<br>
+                Day by (오래오래), day by (오래오래)<br>
+                Day, yeah (우리 오래), 이대로 가면 돼<br><br>
+
+                Let's go steady (yeah), let's go steady, yeah<br>
+                Let's go-o-o-o steady (uh), let's go steady, yeah<br><br>
+
+                Step 1, 너와 눈을 맞추기<br>
+                Step 2, 너의 말을 귀 기울이기<br>
+                Step 3, 그리고 너를 항상 웃게 만들기<br>
+                Yeah, we're gonna make it last, forever and ever<br><br>
+
+                넌 아름다워 푸르디푸른 눈빛<br>
+                그 다정, 다정 말투 이대로 변하지 마<br>
+                뜨거운 바람 속 세포는 너를 느껴 버렸어 (yeah)<br>
+                이대로 가면 돼<br><br>
+
+                Day by (오래오래), day by (오래오래)<br>
+                Day, yeah (우리 오래), 이대로만 가자<br>
+                Day by (오래오래), day by (오래오래)<br>
+                Day, yeah (우리 오래), 이대로 가면 돼<br><br>
+
+                Let's go steady (yeah), let's go steady, yeah<br>
+                Let's go-o-o-o steady (uh), let's go steady, yeah<br><br>
+
+           <iframe width="560" height="315" src="https://www.youtube.com/embed/IKlkZZv76Ho?si=WpW-kgVop_Agiu0w" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            <!-- 原本帶有三個分頁的區塊 (歌詞區內部) -->
+            <div id="tabs">
+                <ul>
+                    <li><a href="#tabs-1">Nunc tincidunt</a></li>
+                    <li><a href="#tabs-2">Proin dolor</a></li>
+                    <li><a href="#tabs-3">Aenean lacinia</a></li>
+                </ul>
+                <div id="tabs-1">
+                    <p>Proin elit arcu, rutrum commodo, vehicula tempus, commodo a, risus. Curabitur nec arcu. Donec sollicitudin mi sit amet mauris.</p>
+                </div>
+                <div id="tabs-2">
+                    <p>Morbi tincidunt, dui sit amet facilisis feugiat, odio metus gravida ante, ut pharetra massa metus id nunc.</p>
+                </div>
+                <div id="tabs-3">
+                    <p>Mauris eleifend est et turpis. Duis id erat. Suspendisse potenti. Aliquam vulputate, pede vel vehicula accumsan.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右邊圖片區 (30%) -->
+        <div class="image-section">
+            <img src="https://cdn.phototourl.com/member/2026-09-30-df1bb6be-8882-4638-be7c-a1c55412278f.jpg" alt="STEADY Photo 1">
+            <img src="https://cdn.phototourl.com/member/2026-09-30-38575866-ef98-4804-b779-7ea097fc5923.webp" alt="STEADY Photo 2">
+            <img src="https://cdn.phototourl.com/member/2026-09-30-79795c68-688a-487e-9b79-e688011c80e7.webp" alt="STEADY Photo 3">
+        </div>
+    </div>
+
+    <!-- 第二首歌：3 Minutes (預設先隱藏 hide) -->
+    <div id="song-2" class="song-content song-container-wrapper" style="display: none;">
+        <!-- 左邊歌詞區 -->
+        <div class="lyrics-section">
+            <div class="song-title">3 Minutes</div>
+            <div class="song-info">作詞：KENZIE / 作曲：KENZIE、Moonshine</div>
+            
+            Our time is runnin' out<br>
+        얼마 남지 않은 시간<br>
+        지금 이 노래가 흘러나오는 순간도<br>
+        만약 멸망하면 지구가<br>
+        사과나무 따위보단 지금 이 노래를<br>
+        너에게 불러주고파<br><br>
+Skip that intro, need no outro<br>
+Burn the bridge and 본론으로<br>
+긴 말 따윈 필요 없고<br>
+It's my tempo<br>
+발라드도 클래식도 좋긴 해도<br>
+Not my style though<br>
+난 내 style로 말할래<br><br>
+3분까진 필요 없어 내 맘 전하려면<br>
+우린 참을성이 없어 너도 똑같다면<br>
+(Yeah, yeah, yeah, yeah)<br>
+이런 나의 메시지를 네게<br>
+보내기엔 충분해<br>
+3분까진 필요 없어 내 맘 전하려면<br>
+3분까진 필요 없어<br>
+(I need you right now)<br>
+3분까진 필요 없어<br>
+(I need you right now)<br>
+Skip the info 마이크를 줘<br><br>
+Turn the beat up 크게 틀어<br>
+집중하고 지금부터 들어봐줘<br>
+복잡한 건 관심 없어<br>
+틀렸다고 뭐라 해도<br>
+난 내 style로 말할래<br>
+3분까진 필요 없어<br>
+내 맘 전하려면<br>
+우린 참을성이 없어<br>
+너도 똑같다면<br>
+이런 나의 메시지를 네게<br>
+보내기엔 충분해<br>
+3분까진 필요 없어<br>
+내 맘 전하려면<br>
+3분까진 필요 없어<br>
+Tickin' like a bomb 언제 터질지 몰라<br>
+그게 뭐가 됐던 간 마음 아니면 심장 huh<br>
+Chitty chitty bang 비켜비켜 빨랑<br>
+Turn the music up high 세게 밟아 엑셀<br>
+멈춤 없이 달려 우리에겐 좁아 이 세계<br>
+뭐든 가능해 망설이는 거야 (대체 왜)<br>
+남들 시선 따위 무시하고 갈래 (패스해)<br>
+내 사전에는 없어 한계<br>
+발라드도 클래식도 좋긴 해도<br>
+Not my style though<br>
+난 내 style로 말할래<br>
+3분까진 필요 없어<br>
+내 맘 전하려면 (yeah, yeah)<br>
+(내 맘을 전할래)<br><br>
+우린 참을성이 없어<br>
+너도 똑같다면 (똑같다면)<br>
+이런 나의 메시지를 네게<br>
+보내기엔 충분해 (해 yeah)<br>
+3분까진 필요 없어<br>
+내 맘 전하려면 (전하려면)<br>
+3분까진 필요 없어<br>
+(I need you right now)<br>
+3분까진 필요 없어<br>
+(I need you right now)<br>
+3분까진 필요 없어<br>
+
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/GTFqQDZ6jec?si=bIqiPw8V9Qe92-zQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+
+        <!-- 右邊圖片區 -->
+        <div class="image-section">
+            <img src="https://cdn.phototourl.com/member/2026-09-30-79795c68-688a-487e-9b79-e688011c80e7.webp" alt="Dunk Shot Photo 1">
+            <img src="https://cdn.phototourl.com/member/2026-09-30-38575866-ef98-4804-b779-7ea097fc5923.webp" alt="Dunk Shot Photo 2">
+        </div>
+    </div>
+</main>
+
+<footer>
+    <p class="copyright"><small>&copy; Copyright 2019 homework，本網站為作業之用，如有侵權敬請告知</small></p>
+</footer>
